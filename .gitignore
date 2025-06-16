@@ -1,0 +1,223 @@
+# ===========================
+# NESTJS & NODE.JS
+# ===========================
+
+# compiled output
+/dist
+/node_modules
+/build
+*.tsbuildinfo
+.swc/
+
+# ===========================
+# PACKAGE MANAGERS
+# ===========================
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-store/
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# ===========================
+# LOGS
+# ===========================
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ===========================
+# TESTING & COVERAGE
+# ===========================
+/coverage
+coverage/
+coverage-e2e/
+/.nyc_output
+.nyc_output/
+*.lcov
+*.clover
+.jest/
+test-results/
+test-report.xml
+junit.xml
+
+# ===========================
+# ENVIRONMENT & CONFIG
+# ===========================
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+!.env.template
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+*.local
+
+# ===========================
+# DATABASE
+# ===========================
+*.db
+*.sqlite
+*.sqlite3
+database.db
+pgdata/
+mysql-data/
+
+# ===========================
+# SECURITY & CERTIFICATES
+# ===========================
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+*.cert
+*.csr
+secrets.*
+.secrets/
+
+# ===========================
+# IDEs AND EDITORS
+# ===========================
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Other IDEs
+/.idea
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
+
+# ===========================
+# OS GENERATED FILES
+# ===========================
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ===========================
+# TEMPORARY & CACHE FILES
+# ===========================
+
+# temp directory
+.temp
+.tmp
+tmp/
+temp/
+.cache/
+*.cache
+*.tmp
+*.temp
+
+# ===========================
+# RUNTIME & PROCESS DATA
+# ===========================
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# ===========================
+# BACKUP FILES
+# ===========================
+*.bak
+*.backup
+*.old
+*.orig
+*~
+
+# ===========================
+# DEVELOPMENT TOOLS
+# ===========================
+
+# ESLint & Prettier
+.eslintcache
+
+# Documentation
+.docusaurus/
+docs/build/
+
+# ===========================
+# DOCKER
+# ===========================
+.docker/
+docker-compose.override.yml
+docker-compose.local.yml
+
+# ===========================
+# MONITORING & PROFILING
+# ===========================
+*.prof
+*.mem
+*.cpu
+.clinic/
+heapdump.*
+
+# ===========================
+# WEBPACK & BUNDLERS
+# ===========================
+.webpack/
+.parcel-cache/
+
+# ===========================
+# NESTJS SPECIFIC
+# ===========================
+.nest_repl_history
+
+# ===========================
+# TYPEORM
+# ===========================
+ormconfig.json
+.typeorm/
+
+# ===========================
+# PROJECT SPECIFIC
+# ===========================
+# Add project-specific files here
+uploads/
+public/uploads/
+storage/
+
+# ===========================
+# MISC
+# ===========================
+.history/
+.ionide/
