@@ -10,7 +10,7 @@ export class AppService {
   ) {}
 
   getHello(): string {
-    return 'E-commerce API with Wompi payment integration is running!';
+    return 'E-commerce API with API payment integration is running!';
   }
 
   async getHealth() {

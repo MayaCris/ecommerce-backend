@@ -5,7 +5,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { getDatabaseConfig } from './shared/infrastructure/config/database.config';
-import { ProductsModule } from './src/modules/products/products.module';
+import { ProductsModule } from './modules/products/products.module';
+import { HealthController } from './shared/infrastructure/http/health.controller';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { ProductsModule } from './src/modules/products/products.module';
     ]),
     ProductsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [AppService],
 })
 export class AppModule {}

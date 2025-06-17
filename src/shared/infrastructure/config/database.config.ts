@@ -15,7 +15,8 @@ export const getDatabaseConfig = (
       configService.get<string>('DB_SSL_MODE') === 'verify-full'
         ? { rejectUnauthorized: false }
         : false,
-    synchronize: configService.get<string>('NODE_ENV') === 'development',
+    synchronize: false,
+    migrationsRun: false,
     logging: configService.get<string>('NODE_ENV') === 'development',
     entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../../migrations/*{.ts,.js}'],

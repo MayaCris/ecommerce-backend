@@ -91,20 +91,20 @@ export class Transaction {
   status: TransactionStatus;
 
   @Column({
-    name: 'wompi_transaction_id',
+    name: 'api_transaction_id',
     type: 'varchar',
     length: 100,
     nullable: true,
   })
-  wompiTransactionId: string;
+  apiTransactionId: string;
 
   @Column({
-    name: 'wompi_reference',
+    name: 'api_reference',
     type: 'varchar',
     length: 100,
     nullable: true,
   })
-  wompiReference: string;
+  apiReference: string;
 
   @Column({
     name: 'card_type',

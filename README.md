@@ -1,97 +1,243 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# E-commerce Payment API Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 🛍️ Project Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A complete e-commerce backend API built with NestJS and TypeScript, featuring integrated payment processing. This project implements a modern hexagonal architecture with comprehensive API documentation.
 
-## Description
+### 🎯 Business Flow
+1. **Product Catalog** → 2. **Payment Form** → 3. **Payment Summary** → 4. **API Processing** → 5. **Result Confirmation**
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### ✨ Key Features
+- 🛒 Product catalog with real-time stock management
+- 💳 Secure payment processing with API integration
+- 📦 Order and delivery tracking system
+- 🔐 Credit card validation (Visa/Mastercard detection)
+- 📱 Mobile-first API design
+- 🎯 Railway Oriented Programming (ROP) pattern
+- 🏗️ Hexagonal Architecture implementation
 
-## Project setup
+## 📚 API Documentation
+
+### 🔗 Swagger Documentation
+- **Development**: [http://localhost:3000/docs](http://localhost:3000/docs)
+- **Production**: https://your-production-url.com/docs
+
+### 📋 Postman Collection
+Import the complete Postman collection for testing:
+- **Collection**: `postman/E-commerce-API.postman_collection.json`
+- **Environment**: `postman/E-commerce-API.postman_environment.json`
+
+#### Quick Import to Postman:
+1. Open Postman
+2. Click "Import" → "File" 
+3. Select both files from the `postman/` directory
+4. Update environment variables with your local/production URLs
+
+### 🔧 Available Endpoints
+
+#### Products
+- `GET /api/v1/products` - Get all available products (with pagination)
+- `GET /api/v1/products/:id` - Get product by ID
+
+#### Customers  
+- `POST /api/v1/customers` - Create customer profile
+- `GET /api/v1/customers/:id` - Get customer details
+
+#### Transactions
+- `POST /api/v1/transactions` - Create transaction (PENDING status)
+- `GET /api/v1/transactions/:id` - Get transaction details
+- `PATCH /api/v1/transactions/:id/status` - Update transaction status
+
+#### Payments (API Integration)
+- `POST /api/v1/payments/process` - Process payment through API
+- `POST /api/v1/payments/webhook` - API webhook for status updates
+
+#### Deliveries
+- `GET /api/v1/deliveries/:transactionId` - Get delivery status
+- `PATCH /api/v1/deliveries/:id/status` - Update delivery status
+
+#### Health Check
+- `GET /api/v1/health` - Application health status
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- PostgreSQL 12+
+- npm or yarn
+
+### Installation
 
 ```bash
-$ npm install
+# Clone repository
+git clone <repository-url>
+cd ecommerce-backend
+
+# Install dependencies
+npm install
+
+# Setup environment variables
+cp .env.example .env
+# Edit .env with your database and API credentials
+
+# Setup database (run SQL schema)
+psql -U postgres -d your_database -f database/schema.sql
+
+# Start development server
+npm run start:dev
+
+# Open API documentation
+# Visit: http://localhost:3000/docs
 ```
 
-## Compile and run the project
+## 🧪 Testing
 
 ```bash
-# development
-$ npm run start
+# Unit tests
+npm run test
 
-# watch mode
-$ npm run start:dev
+# Unit tests with coverage
+npm run test:cov
 
-# production mode
-$ npm run start:prod
+# E2E tests  
+npm run test:e2e
+
+# Test watch mode
+npm run test:watch
 ```
 
-## Run tests
+### Test Coverage Target
+- **Minimum Coverage**: 80% (as required)
+- **Backend Tests**: Unit + Integration + E2E
+- **Frontend Tests**: Component + Integration + E2E
 
+## 🗄️ Database Model
+
+### Core Tables
+- **products** - Product catalog with inventory
+- **customers** - Customer profiles  
+- **delivery_addresses** - Customer delivery addresses
+- **transactions** - Payment transactions
+- **transaction_items** - Products in each transaction
+- **deliveries** - Delivery tracking
+- **app_settings** - Application configuration
+
+### Database Views
+- **available_products** - Active products with stock > 0
+- **transaction_summary** - Transaction overview with customer info
+
+See complete database schema: `database/schema.sql`
+
+## 🔐 API Integration
+
+### Sandbox Configuration
+- **Environment**: Sandbox (for development/testing)
+- **Supported Cards**: Visa, Mastercard
+- **Test Cards**: 
+  - Visa: `4242424242424242`
+  - Mastercard: `5555555555554444`
+
+### Payment Flow
+1. Create transaction with `PENDING` status
+2. Submit payment to API
+3. Receive webhook notification
+4. Update transaction status
+5. Update product stock
+6. Create delivery record
+
+## 🏗️ Architecture
+
+### Hexagonal Architecture
+```
+src/
+├── modules/
+│   ├── products/
+│   │   ├── application/     # Use cases & DTOs
+│   │   ├── domain/          # Entities & repositories
+│   │   ├── infrastructure/  # Database adapters
+│   │   └── presentation/    # Controllers & DTOs
+│   ├── customers/
+│   ├── transactions/
+│   ├── payments/
+│   └── deliveries/
+└── shared/
+    ├── application/         # Common DTOs
+    ├── domain/             # Shared entities & enums  
+    └── infrastructure/     # Config & database
+```
+
+### Design Patterns
+- **Hexagonal Architecture** - Clean separation of concerns
+- **Repository Pattern** - Data access abstraction
+- **Railway Oriented Programming** - Error handling
+- **CQRS** - Command Query Responsibility Segregation
+
+## 🚀 Deployment
+
+### Development
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
+# API: http://localhost:3000/api/v1
+# Docs: http://localhost:3000/docs
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### Production  
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Docker Support
+```bash
+# Build image
+docker build -t ecommerce-api .
 
-## Resources
+# Run container
+docker run -p 3000:3000 ecommerce-api
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 🔗 API URLs
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Development
+- **API Base URL**: http://localhost:3000/api/v1
+- **Swagger Docs**: http://localhost:3000/docs
 
-## Support
+### Production
+- **API Base URL**: https://your-domain.com/api/v1
+- **Swagger Docs**: https://your-domain.com/docs
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 🤝 Contributing
 
-## Stay in touch
+1. Follow the Git workflow plan: `GIT_WORKFLOW_PLAN.md`
+2. Create feature branches from `develop`
+3. Use conventional commits
+4. Ensure 80%+ test coverage
+5. Update API documentation
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 📋 Project Requirements Compliance
+
+✅ **Backend Requirements**
+- NestJS with TypeScript
+- Hexagonal Architecture  
+- Railway Oriented Programming
+- PostgreSQL database
+- 80%+ test coverage
+- Swagger documentation
+
+✅ **Business Requirements**
+- Product catalog with stock
+- Payment processing with API
+- 5-step checkout flow
+- Transaction management
+- Delivery tracking
+- Stock updates
+
+✅ **Integration Requirements**  
+- API sandbox integration
+- Credit card validation
+- Payment webhook handling
+- Error handling & resilience
+
 
 ## License
 
