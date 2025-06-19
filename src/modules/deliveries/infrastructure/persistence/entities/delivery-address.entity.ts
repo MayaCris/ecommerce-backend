@@ -3,18 +3,20 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
   Index,
 } from 'typeorm';
 
+/**
+ * DeliveryAddress Entity for TypeORM
+ * Matches the actual database table 'delivery_addresses' structure
+ */
 @Entity('delivery_addresses')
-@Index('idx_delivery_addresses_unique_default', ['customerId'], {
+@Index(['customerId'])
+@Index(['customerId', 'isDefault'], {
   unique: true,
   where: 'is_default = true',
 })
-export class DeliveryAddress {
+export class DeliveryAddressEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -68,7 +70,7 @@ export class DeliveryAddress {
     type: 'text',
     nullable: true,
   })
-  additionalInfo: string;
+  additionalInfo: string | null;
 
   @Column({
     name: 'is_default',
@@ -79,21 +81,7 @@ export class DeliveryAddress {
 
   @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp with time zone',
   })
   createdAt: Date;
-
-  // Relations using string references to avoid circular imports
-  @ManyToOne('Customer', 'deliveryAddresses', {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'customer_id' })
-  customer: any;
-
-  @OneToMany('Transaction', 'deliveryAddress')
-  transactions: any[];
-
-  @OneToMany('Delivery', 'deliveryAddress')
-  deliveries: any[];
 }

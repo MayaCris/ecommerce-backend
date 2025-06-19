@@ -1,30 +1,30 @@
-import { Customer } from '../entities/customer.entity';
+import { CustomerDomain } from '../entities/customer-domain.entity';
 import { IBaseRepository } from '../../../../shared/domain/repositories/base.repository.interface';
 
 /**
  * Customer repository interface
  * Defines all operations available for Customer entities
  */
-export interface ICustomerRepository extends IBaseRepository<Customer> {
+export interface ICustomerRepository extends IBaseRepository<CustomerDomain> {
   /**
    * Find customer by email (unique)
    */
-  findByEmail(email: string): Promise<Customer | null>;
+  findByEmail(email: string): Promise<CustomerDomain | null>;
 
   /**
    * Find customer by phone number
    */
-  findByPhone(phone: string): Promise<Customer | null>;
+  findByPhone(phone: string): Promise<CustomerDomain | null>;
 
   /**
    * Find customers by name (partial match)
    */
-  findByName(name: string): Promise<Customer[]>;
+  findByName(name: string): Promise<CustomerDomain[]>;
 
   /**
    * Find customers created within date range
    */
-  findByDateRange(startDate: Date, endDate: Date): Promise<Customer[]>;
+  findByDateRange(startDate: Date, endDate: Date): Promise<CustomerDomain[]>;
 
   /**
    * Check if email is already registered
@@ -39,5 +39,5 @@ export interface ICustomerRepository extends IBaseRepository<Customer> {
   /**
    * Find customers with recent activity
    */
-  findActiveCustomers(daysAgo: number): Promise<Customer[]>;
+  findActiveCustomers(daysAgo: number): Promise<CustomerDomain[]>;
 }

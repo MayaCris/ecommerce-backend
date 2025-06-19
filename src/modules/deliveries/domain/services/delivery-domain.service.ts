@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseDomainService } from '../../../../shared/domain/services/base-domain.service';
-import { Delivery } from '../entities/delivery.entity';
+import { DeliveryDomain } from '../entities/delivery-domain.entity';
 import { DeliveryStatus } from '../../../../shared/domain/enums';
 
 /**
@@ -60,10 +60,10 @@ export class DeliveryDomainService extends BaseDomainService {
    * Updates delivery status with business rules validation
    */
   updateDeliveryStatus(
-    delivery: Delivery,
+    delivery: DeliveryDomain,
     newStatus: DeliveryStatus,
     trackingNotes?: string,
-  ): Delivery {
+  ): DeliveryDomain {
     this.logDomainOperation('updateDeliveryStatus', {
       deliveryId: delivery.id,
       oldStatus: delivery.status,
@@ -73,23 +73,34 @@ export class DeliveryDomainService extends BaseDomainService {
 
     this.canTransitionToStatus(delivery.status, newStatus);
 
-    delivery.status = newStatus;
-    delivery.updatedAt = new Date();
-
-    // Set delivery date when delivered
-    if (newStatus === DeliveryStatus.DELIVERED && !delivery.deliveredAt) {
-      delivery.deliveredAt = new Date();
-    }
+    // Use the entity's own update method to create a new instance
+    let updatedDelivery = delivery.updateStatus(newStatus);
 
     // Add tracking notes if provided
     if (trackingNotes) {
       const currentNotes = delivery.deliveryNotes || '';
       const timestamp = new Date().toISOString();
-      delivery.deliveryNotes =
+      const newNotes =
         `${currentNotes}\n[${timestamp}] ${trackingNotes}`.trim();
+
+      // Create a new instance with updated notes
+      updatedDelivery = new DeliveryDomain(
+        updatedDelivery.id,
+        updatedDelivery.transactionId,
+        updatedDelivery.deliveryAddressId,
+        updatedDelivery.trackingNumber,
+        updatedDelivery.carrier,
+        updatedDelivery.status,
+        updatedDelivery.estimatedDeliveryDate,
+        updatedDelivery.shippedAt,
+        updatedDelivery.deliveredAt,
+        newNotes,
+        updatedDelivery.createdAt,
+        updatedDelivery.updatedAt,
+      );
     }
 
-    return delivery;
+    return updatedDelivery;
   }
 
   /**
@@ -122,7 +133,7 @@ export class DeliveryDomainService extends BaseDomainService {
   /**
    * Validates delivery data
    */
-  validateDeliveryData(deliveryData: Partial<Delivery>): void {
+  validateDeliveryData(deliveryData: Partial<DeliveryDomain>): void {
     this.logDomainOperation('validateDeliveryData', 'Validating delivery data');
 
     if (deliveryData.estimatedDeliveryDate) {
@@ -151,7 +162,7 @@ export class DeliveryDomainService extends BaseDomainService {
    * Checks if delivery is overdue
    * Business rule: Delivery is overdue if current date > estimated date + 1 day grace period
    */
-  isDeliveryOverdue(delivery: Delivery): boolean {
+  isDeliveryOverdue(delivery: DeliveryDomain): boolean {
     this.logDomainOperation('isDeliveryOverdue', {
       deliveryId: delivery.id,
       status: delivery.status,

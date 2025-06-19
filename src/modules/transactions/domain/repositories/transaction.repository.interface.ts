@@ -1,31 +1,42 @@
-import { Transaction } from '../entities/transaction.entity';
 import { TransactionStatus } from '../../../../shared/domain/enums';
 import { IBaseRepository } from '../../../../shared/domain/repositories/base.repository.interface';
+import { TransactionDomain } from '../entities/transaction-domain.entity';
 
 /**
  * Transaction repository interface
  * Defines all operations available for Transaction entities
  */
-export interface ITransactionRepository extends IBaseRepository<Transaction> {
+export interface ITransactionRepository
+  extends IBaseRepository<TransactionDomain> {
+  /**
+   * Save a transaction
+   */
+  //save(transaction: TransactionDomain): TransactionDomain | PromiseLike<TransactionDomain>;
+  save(transaction: TransactionDomain): Promise<TransactionDomain>;
   /**
    * Find transactions by customer ID
    */
-  findByCustomerId(customerId: string): Promise<Transaction[]>;
+  findByCustomerId(customerId: string): Promise<TransactionDomain[]>;
+
+  /**
+   * Find transaction by ID
+   */
+  findById(id: string): Promise<TransactionDomain | null>;
 
   /**
    * Find transaction by API transaction ID
    */
-  findByApiId(apiTransactionId: string): Promise<Transaction | null>;
+  findByApiId(apiTransactionId: string): Promise<TransactionDomain | null>;
 
   /**
    * Find transactions by status
    */
-  findByStatus(status: TransactionStatus): Promise<Transaction[]>;
+  findByStatus(status: TransactionStatus): Promise<TransactionDomain[]>;
 
   /**
    * Find transactions within date range
    */
-  findByDateRange(startDate: Date, endDate: Date): Promise<Transaction[]>;
+  findByDateRange(startDate: Date, endDate: Date): Promise<TransactionDomain[]>;
 
   /**
    * Find transactions by amount range
@@ -33,7 +44,7 @@ export interface ITransactionRepository extends IBaseRepository<Transaction> {
   findByAmountRange(
     minAmount: number,
     maxAmount: number,
-  ): Promise<Transaction[]>;
+  ): Promise<TransactionDomain[]>;
 
   /**
    * Update transaction status
@@ -41,12 +52,12 @@ export interface ITransactionRepository extends IBaseRepository<Transaction> {
   updateStatus(
     id: string,
     status: TransactionStatus,
-  ): Promise<Transaction | null>;
+  ): Promise<TransactionDomain | null>;
 
   /**
    * Find pending transactions older than specified minutes
    */
-  findStaleTransactions(minutesAgo: number): Promise<Transaction[]>;
+  findStaleTransactions(minutesAgo: number): Promise<TransactionDomain[]>;
 
   /**
    * Calculate total revenue for date range
