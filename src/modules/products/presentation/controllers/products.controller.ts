@@ -1,17 +1,101 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  Inject,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiParam,
   ApiQuery,
+  ApiBody,
 } from '@nestjs/swagger';
 import { ProductResponseDto } from '../dto/product-response.dto';
+import { CreateProductRequestDto } from '../dto/create-product-request.dto';
 import { ApiResponseDto } from '../../../../shared/application/dto/api-response.dto';
+import {
+  CreateProductUseCase,
+  CreateProductDto,
+} from '../../application/use-cases/create-product.use-case';
+import {
+  GetProductsUseCase,
+  GetProductsOptions,
+} from '../../application/use-cases/get-products.use-case';
+import { IProductRepository } from '../../domain/repositories/product.repository.interface';
+import { PRODUCT_REPOSITORY_TOKEN } from '../../products.tokens';
 
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
+  constructor(
+    private readonly createProductUseCase: CreateProductUseCase,
+    private readonly getProductsUseCase: GetProductsUseCase,
+    @Inject(PRODUCT_REPOSITORY_TOKEN)
+    private readonly productRepository: IProductRepository,
+  ) {}
+
+  @Post()
+  @ApiOperation({
+    summary: 'Create a new product',
+    description: 'Creates a new product with Value Objects validation',
+  })
+  @ApiBody({ type: CreateProductRequestDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Product created successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+  })
+  async createProduct(@Body() request: CreateProductRequestDto) {
+    try {
+      // Convert presentation DTO to use case DTO
+      const createProductDto: CreateProductDto = {
+        name: request.name,
+        description: request.description,
+        price: request.price,
+        stock: request.stock,
+        sku: request.sku,
+        imageUrl: request.imageUrl || '',
+        isActive: request.isActive ?? true,
+      };
+
+      const product = await this.createProductUseCase.execute(createProductDto);
+      return {
+        success: true,
+        message: 'Product created successfully',
+        data: {
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price.amount,
+          currency: product.price.currency,
+          stock: product.stock.amount,
+          sku: product.sku.code,
+          imageUrl: product.imageUrl,
+          isActive: product.isActive,
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+        },
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      return {
+        success: false,
+        message: 'Failed to create product',
+        error: errorMessage,
+        timestamp: new Date().toISOString(),
+      };
+    }
+  }
   @Get()
   @ApiOperation({
     summary: 'Get all available products',
@@ -87,21 +171,55 @@ export class ProductsController {
       },
     },
   })
-  findAll(
+  async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
     @Query('search') search?: string,
-  ): ApiResponseDto<ProductResponseDto[]> {
-    // TODO: Implementation will be added later
-    // Using page, limit, search for future implementation
-    console.log('Query params:', { page, limit, search });
+  ) {
+    try {
+      const options: GetProductsOptions = {
+        page: Number(page),
+        limit: Number(limit),
+        search,
+        includeInactive: false, // Business rule: only show active products
+      };
 
-    return {
-      success: true,
-      message: 'Products retrieved successfully',
-      data: [],
-      timestamp: new Date().toISOString(),
-    };
+      const result = await this.getProductsUseCase.execute(options);
+
+      return {
+        success: true,
+        message: 'Products retrieved successfully',
+        data: result.products.map((product) => ({
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price.amount,
+          currency: product.price.currency,
+          stockQuantity: product.stock.amount,
+          sku: product.sku.code,
+          imageUrl: product.imageUrl,
+          isActive: product.isActive,
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+        })),
+        pagination: {
+          page: result.page,
+          limit: result.limit,
+          total: result.total,
+          totalPages: result.totalPages,
+        },
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      return {
+        success: false,
+        message: 'Failed to retrieve products',
+        error: errorMessage,
+        timestamp: new Date().toISOString(),
+      };
+    }
   }
 
   @Get(':id')

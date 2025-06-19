@@ -1,4 +1,4 @@
-import { DeliveryAddress } from '../entities/delivery-address.entity';
+import { DeliveryAddressDomain } from '../entities/delivery-address-domain.entity';
 import { IBaseRepository } from '../../../../shared/domain/repositories/base.repository.interface';
 
 /**
@@ -6,16 +6,18 @@ import { IBaseRepository } from '../../../../shared/domain/repositories/base.rep
  * Defines all operations available for DeliveryAddress entities
  */
 export interface IDeliveryAddressRepository
-  extends IBaseRepository<DeliveryAddress> {
+  extends IBaseRepository<DeliveryAddressDomain> {
   /**
    * Find all addresses for a specific customer
    */
-  findByCustomerId(customerId: string): Promise<DeliveryAddress[]>;
+  findByCustomerId(customerId: string): Promise<DeliveryAddressDomain[]>;
 
   /**
    * Find customer's default address
    */
-  findDefaultByCustomerId(customerId: string): Promise<DeliveryAddress | null>;
+  findDefaultByCustomerId(
+    customerId: string,
+  ): Promise<DeliveryAddressDomain | null>;
 
   /**
    * Set address as default (removes default from others)
@@ -23,17 +25,17 @@ export interface IDeliveryAddressRepository
   setAsDefault(
     addressId: string,
     customerId: string,
-  ): Promise<DeliveryAddress | null>;
+  ): Promise<DeliveryAddressDomain | null>;
 
   /**
    * Find addresses by city
    */
-  findByCity(city: string): Promise<DeliveryAddress[]>;
+  findByCity(city: string): Promise<DeliveryAddressDomain[]>;
 
   /**
    * Find addresses by postal code
    */
-  findByPostalCode(postalCode: string): Promise<DeliveryAddress[]>;
+  findByPostalCode(postalCode: string): Promise<DeliveryAddressDomain[]>;
 
   /**
    * Count addresses per customer

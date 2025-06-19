@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BaseDomainService } from '../../../../shared/domain/services/base-domain.service';
-import { Transaction } from '../entities/transaction.entity';
-import { TransactionItem } from '../entities/transaction-item.entity';
+import { TransactionEntity } from '../../infrastructure/persistence/entities/transaction.entity';
+import { TransactionItemDomain } from '../entities/transaction-item-domain.entity';
 import { TransactionStatus } from '../../../../shared/domain/enums';
 import { Product } from '../../../products/domain/entities/product.entity';
 
@@ -23,7 +23,7 @@ export class TransactionDomainService extends BaseDomainService {
    * Business rule: Base fee is applied, delivery fee is optional
    */
   calculateTransactionTotals(
-    items: TransactionItem[],
+    items: TransactionItemDomain[],
     baseFee = 0,
     deliveryFee = 0,
   ): {
@@ -39,7 +39,7 @@ export class TransactionDomainService extends BaseDomainService {
     });
 
     const subtotal = items.reduce(
-      (sum, item) => sum + item.unitPrice * item.quantity,
+      (sum, item) => sum + item.unitPrice.amount * item.quantity.amount,
       0,
     );
 
@@ -62,7 +62,7 @@ export class TransactionDomainService extends BaseDomainService {
    * Validates if a transaction can be processed
    * Business rule: Transaction must be in pending status and have valid items
    */
-  canProcessTransaction(transaction: Transaction): boolean {
+  canProcessTransaction(transaction: TransactionEntity): boolean {
     this.logDomainOperation('canProcessTransaction', {
       transactionId: transaction.id,
       status: transaction.status,
@@ -75,13 +75,8 @@ export class TransactionDomainService extends BaseDomainService {
     );
 
     this.validateBusinessRule(
-      transaction.totalAmount > 0,
+      parseFloat(transaction.totalAmount) > 0,
       'Transaction total amount must be greater than 0',
-    );
-
-    this.validateBusinessRule(
-      transaction.items && transaction.items.length > 0,
-      'Transaction must have at least one item',
     );
 
     return true;
@@ -92,7 +87,12 @@ export class TransactionDomainService extends BaseDomainService {
    */
   createTransactionItems(
     products: Array<{ product: Product; quantity: number }>,
-  ): Partial<TransactionItem>[] {
+  ): Array<{
+    productId: string;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+  }> {
     this.logDomainOperation('createTransactionItems', {
       productsCount: products.length,
     });
@@ -155,9 +155,9 @@ export class TransactionDomainService extends BaseDomainService {
    * Applies transaction to update entity state
    */
   updateTransactionStatus(
-    transaction: Transaction,
+    transaction: TransactionEntity,
     newStatus: TransactionStatus,
-  ): Transaction {
+  ): TransactionEntity {
     this.logDomainOperation('updateTransactionStatus', {
       transactionId: transaction.id,
       oldStatus: transaction.status,

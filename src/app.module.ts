@@ -6,6 +6,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { getDatabaseConfig } from './shared/infrastructure/config/database.config';
 import { ProductsModule } from './modules/products/products.module';
+import { CustomersModule } from './modules/customers/customers.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
+import { DeliveriesModule } from './modules/deliveries/deliveries.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 import { HealthController } from './shared/infrastructure/http/health.controller';
 
 @Module({
@@ -27,6 +31,10 @@ import { HealthController } from './shared/infrastructure/http/health.controller
       },
     ]),
     ProductsModule,
+    CustomersModule,
+    TransactionsModule,
+    DeliveriesModule,
+    PaymentsModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],

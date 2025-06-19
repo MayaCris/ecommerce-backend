@@ -1,21 +1,31 @@
-import { TransactionItem } from '../entities/transaction-item.entity';
+import { TransactionItemDomain } from '../entities/transaction-item-domain.entity';
 import { IBaseRepository } from '../../../../shared/domain/repositories/base.repository.interface';
 
 /**
  * Transaction Item repository interface
- * Defines all operations available for TransactionItem entities
+ * Defines all operations available for TransactionItemDomain entities
  */
 export interface ITransactionItemRepository
-  extends IBaseRepository<TransactionItem> {
+  extends IBaseRepository<TransactionItemDomain> {
   /**
    * Find all items for a specific transaction
    */
-  findByTransactionId(transactionId: string): Promise<TransactionItem[]>;
+  findByTransactionId(transactionId: string): Promise<TransactionItemDomain[]>;
 
   /**
    * Find all transactions that include a specific product
    */
-  findByProductId(productId: string): Promise<TransactionItem[]>;
+  findByProductId(productId: string): Promise<TransactionItemDomain[]>;
+
+  /**
+   * Count items by transaction ID
+   */
+  countByTransactionId(transactionId: string): Promise<number>;
+
+  /**
+   * Delete all items for a transaction
+   */
+  deleteByTransactionId(transactionId: string): Promise<boolean>;
 
   /**
    * Calculate total quantity sold for a product

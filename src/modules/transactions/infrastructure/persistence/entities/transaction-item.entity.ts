@@ -12,7 +12,7 @@ import {
 @Check(`"quantity" > 0`)
 @Check(`"unit_price" >= 0`)
 @Check(`"total_price" >= 0`)
-export class TransactionItem {
+export class TransactionItemEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -62,13 +62,13 @@ export class TransactionItem {
   createdAt: Date;
 
   // Relations using string references to avoid circular imports
-  @ManyToOne('Transaction', 'items', {
+  @ManyToOne('TransactionEntity', {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'transaction_id' })
   transaction: any;
 
-  @ManyToOne('Product')
+  @ManyToOne('ProductEntity')
   @JoinColumn({ name: 'product_id' })
   product: any;
 }

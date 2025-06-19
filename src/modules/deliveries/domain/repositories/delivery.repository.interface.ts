@@ -1,4 +1,4 @@
-import { Delivery } from '../entities/delivery.entity';
+import { DeliveryDomain } from '../entities/delivery-domain.entity';
 import { DeliveryStatus } from '../../../../shared/domain/enums';
 import { IBaseRepository } from '../../../../shared/domain/repositories/base.repository.interface';
 
@@ -6,41 +6,44 @@ import { IBaseRepository } from '../../../../shared/domain/repositories/base.rep
  * Delivery repository interface
  * Defines all operations available for Delivery entities
  */
-export interface IDeliveryRepository extends IBaseRepository<Delivery> {
+export interface IDeliveryRepository extends IBaseRepository<DeliveryDomain> {
   /**
    * Find delivery by transaction ID
    */
-  findByTransactionId(transactionId: string): Promise<Delivery | null>;
+  findByTransactionId(transactionId: string): Promise<DeliveryDomain | null>;
 
   /**
    * Find deliveries by status
    */
-  findByStatus(status: DeliveryStatus): Promise<Delivery[]>;
+  findByStatus(status: DeliveryStatus): Promise<DeliveryDomain[]>;
 
   /**
    * Find deliveries by address
    */
-  findByAddress(address: string): Promise<Delivery[]>;
+  findByAddress(address: string): Promise<DeliveryDomain[]>;
 
   /**
    * Find deliveries scheduled for today
    */
-  findScheduledForToday(): Promise<Delivery[]>;
+  findScheduledForToday(): Promise<DeliveryDomain[]>;
 
   /**
    * Find overdue deliveries
    */
-  findOverdue(): Promise<Delivery[]>;
+  findOverdue(): Promise<DeliveryDomain[]>;
 
   /**
    * Update delivery status
    */
-  updateStatus(id: string, status: DeliveryStatus): Promise<Delivery | null>;
+  updateStatus(
+    id: string,
+    status: DeliveryStatus,
+  ): Promise<DeliveryDomain | null>;
 
   /**
    * Find deliveries by date range
    */
-  findByDateRange(startDate: Date, endDate: Date): Promise<Delivery[]>;
+  findByDateRange(startDate: Date, endDate: Date): Promise<DeliveryDomain[]>;
 
   /**
    * Get delivery statistics

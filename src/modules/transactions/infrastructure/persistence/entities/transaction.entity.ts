@@ -4,21 +4,21 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  JoinColumn,
-  Check,
+  Index,
 } from 'typeorm';
-import { TransactionStatus } from '../../../../shared/domain/enums/transaction-status.enum';
-import { CardType } from '../../../../shared/domain/enums/card-type.enum';
+import { TransactionStatus } from '../../../../../shared/domain/enums/transaction-status.enum';
+import { CardType } from '../../../../../shared/domain/enums/card-type.enum';
 
+/**
+ * Transaction Entity for TypeORM
+ * Matches the actual database table 'transactions' structure
+ */
 @Entity('transactions')
-@Check(`"subtotal" >= 0`)
-@Check(`"base_fee" >= 0`)
-@Check(`"delivery_fee" >= 0`)
-@Check(`"total_amount" >= 0`)
-export class Transaction {
+@Index(['customerId'])
+@Index(['transactionNumber'], { unique: true })
+@Index(['status'])
+@Index(['createdAt'])
+export class TransactionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -45,13 +45,14 @@ export class Transaction {
   })
   deliveryAddressId: string;
 
+  // Payment information
   @Column({
     type: 'decimal',
     precision: 10,
     scale: 2,
     nullable: false,
   })
-  subtotal: number;
+  subtotal: string;
 
   @Column({
     name: 'base_fee',
@@ -59,9 +60,9 @@ export class Transaction {
     precision: 10,
     scale: 2,
     nullable: false,
-    default: 0,
+    default: '0',
   })
-  baseFee: number;
+  baseFee: string;
 
   @Column({
     name: 'delivery_fee',
@@ -69,9 +70,9 @@ export class Transaction {
     precision: 10,
     scale: 2,
     nullable: false,
-    default: 0,
+    default: '0',
   })
-  deliveryFee: number;
+  deliveryFee: string;
 
   @Column({
     name: 'total_amount',
@@ -80,8 +81,9 @@ export class Transaction {
     scale: 2,
     nullable: false,
   })
-  totalAmount: number;
+  totalAmount: string;
 
+  // Transaction status and external references
   @Column({
     type: 'enum',
     enum: TransactionStatus,
@@ -96,7 +98,7 @@ export class Transaction {
     length: 100,
     nullable: true,
   })
-  apiTransactionId: string;
+  apiTransactionId: string | null;
 
   @Column({
     name: 'api_reference',
@@ -104,15 +106,16 @@ export class Transaction {
     length: 100,
     nullable: true,
   })
-  apiReference: string;
+  apiReference: string | null;
 
+  // Payment method information
   @Column({
     name: 'card_type',
     type: 'enum',
     enum: CardType,
     nullable: true,
   })
-  cardType: CardType;
+  cardType: CardType | null;
 
   @Column({
     name: 'card_last_four_digits',
@@ -120,43 +123,25 @@ export class Transaction {
     length: 4,
     nullable: true,
   })
-  cardLastFourDigits: string;
+  cardLastFourDigits: string | null;
 
+  // Audit fields
   @Column({
     name: 'processed_at',
-    type: 'timestamptz',
+    type: 'timestamp with time zone',
     nullable: true,
   })
-  processedAt: Date;
+  processedAt: Date | null;
 
   @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp with time zone',
   })
   createdAt: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp with time zone',
   })
   updatedAt: Date;
-
-  // Relations using string references to avoid circular imports
-  @ManyToOne('Customer', 'transactions')
-  @JoinColumn({ name: 'customer_id' })
-  customer: any;
-
-  @ManyToOne('DeliveryAddress', 'transactions')
-  @JoinColumn({ name: 'delivery_address_id' })
-  deliveryAddress: any;
-
-  @OneToMany('TransactionItem', 'transaction', {
-    cascade: true,
-  })
-  items: any[];
-
-  @OneToOne('Delivery', 'transaction')
-  delivery: any;
 }

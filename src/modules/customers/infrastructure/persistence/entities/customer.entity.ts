@@ -4,11 +4,17 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  Index,
 } from 'typeorm';
 
+/**
+ * Customer Persistence Entity (TypeORM)
+ * Used only for database operations - contains primitive types
+ * Matches the customers table schema exactly
+ */
 @Entity('customers')
-export class Customer {
+@Index('idx_customers_email', ['email'], { unique: true })
+export class CustomerEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -41,7 +47,7 @@ export class Customer {
     length: 20,
     nullable: true,
   })
-  phone: string;
+  phone: string | null;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -56,11 +62,4 @@ export class Customer {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
-
-  // Relations will be added later to avoid circular imports
-  @OneToMany('DeliveryAddress', 'customer')
-  deliveryAddresses: any[];
-
-  @OneToMany('Transaction', 'customer')
-  transactions: any[];
 }

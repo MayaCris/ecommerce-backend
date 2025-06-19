@@ -1,55 +1,59 @@
-import { Product } from '../entities/product.entity';
+import { ProductDomain } from '../entities/product-domain.entity';
 import { IBaseRepository } from '../../../../shared/domain/repositories/base.repository.interface';
+import { SKU, Money, Quantity } from '../../../../shared/domain/value-objects';
 
 /**
  * Product repository interface
- * Defines all operations available for Product entities
+ * Defines all operations available for Product entities using Value Objects
  */
-export interface IProductRepository extends IBaseRepository<Product> {
+export interface IProductRepository extends IBaseRepository<ProductDomain> {
   /**
    * Find products by name (case-insensitive search)
    */
-  findByName(name: string): Promise<Product[]>;
+  findByName(name: string): Promise<ProductDomain[]>;
 
   /**
    * Find products by SKU
    */
-  findBySku(sku: string): Promise<Product | null>;
+  findBySku(sku: SKU): Promise<ProductDomain | null>;
 
   /**
    * Find all active products (is_active = true)
    */
-  findActive(): Promise<Product[]>;
+  findActive(): Promise<ProductDomain[]>;
 
   /**
    * Find products with stock greater than specified amount
    */
-  findWithStock(minStock?: number): Promise<Product[]>;
+  findWithStock(minStock?: Quantity): Promise<ProductDomain[]>;
 
   /**
    * Find products within price range
    */
-  findByPriceRange(minPrice: number, maxPrice: number): Promise<Product[]>;
+  findByPriceRange(minPrice: Money, maxPrice: Money): Promise<ProductDomain[]>;
 
   /**
    * Search products by text (name or description)
    */
-  search(query: string, options?: ProductSearchOptions): Promise<Product[]>;
+  search(
+    query: string,
+    options?: ProductSearchOptions,
+  ): Promise<ProductDomain[]>;
 
   /**
    * Update stock quantity for a product
    */
-  updateStock(id: string, newQuantity: number): Promise<Product | null>;
+  updateStock(id: string, newQuantity: Quantity): Promise<ProductDomain | null>;
 
   /**
    * Reduce stock quantity (for sales)
    */
-  reduceStock(id: string, quantity: number): Promise<Product | null>;
+  reduceStock(id: string, quantity: Quantity): Promise<ProductDomain | null>;
 
   /**
    * Check if product has sufficient stock
    */
-  hasStock(id: string, requiredQuantity: number): Promise<boolean>;
+  hasStock(id: string, requiredQuantity: Quantity): Promise<boolean>;
 }
 
 /**

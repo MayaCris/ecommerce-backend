@@ -4,14 +4,21 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToOne,
-  ManyToOne,
-  JoinColumn,
+  Index,
 } from 'typeorm';
-import { DeliveryStatus } from '../../../../shared/domain/enums/delivery-status.enum';
+import { DeliveryStatus } from '../../../../../shared/domain/enums/delivery-status.enum';
 
+/**
+ * Delivery Entity for TypeORM
+ * Matches the actual database table 'deliveries' structure
+ */
 @Entity('deliveries')
-export class Delivery {
+@Index(['transactionId'], { unique: true })
+@Index(['deliveryAddressId'])
+@Index(['status'])
+@Index(['trackingNumber'])
+@Index(['createdAt'])
+export class DeliveryEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -30,20 +37,21 @@ export class Delivery {
   })
   deliveryAddressId: string;
 
+  // Delivery tracking
   @Column({
     name: 'tracking_number',
     type: 'varchar',
     length: 100,
     nullable: true,
   })
-  trackingNumber: string;
+  trackingNumber: string | null;
 
   @Column({
     type: 'varchar',
     length: 100,
     nullable: true,
   })
-  carrier: string;
+  carrier: string | null;
 
   @Column({
     type: 'enum',
@@ -53,56 +61,46 @@ export class Delivery {
   })
   status: DeliveryStatus;
 
+  // Delivery timeline
   @Column({
     name: 'estimated_delivery_date',
     type: 'date',
     nullable: true,
   })
-  estimatedDeliveryDate: Date;
+  estimatedDeliveryDate: Date | null;
 
   @Column({
     name: 'shipped_at',
-    type: 'timestamptz',
+    type: 'timestamp with time zone',
     nullable: true,
   })
-  shippedAt: Date;
+  shippedAt: Date | null;
 
   @Column({
     name: 'delivered_at',
-    type: 'timestamptz',
+    type: 'timestamp with time zone',
     nullable: true,
   })
-  deliveredAt: Date;
+  deliveredAt: Date | null;
 
+  // Additional information
   @Column({
     name: 'delivery_notes',
     type: 'text',
     nullable: true,
   })
-  deliveryNotes: string;
+  deliveryNotes: string | null;
 
+  // Audit fields
   @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp with time zone',
   })
   createdAt: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp with time zone',
   })
   updatedAt: Date;
-
-  // Relations using string references to avoid circular imports
-  @OneToOne('Transaction', 'delivery', {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'transaction_id' })
-  transaction: any;
-
-  @ManyToOne('DeliveryAddress', 'deliveries')
-  @JoinColumn({ name: 'delivery_address_id' })
-  deliveryAddress: any;
 }
